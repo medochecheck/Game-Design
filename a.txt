@@ -1,1 +1,1 @@
-New version of a.txt
+Second version of a.txt
