@@ -2,41 +2,40 @@
 #include <limits>
 #include <string>
 
-int main() {
-    uint64_t sum = 0;
-    const uint32_t STOP_NUMBER = 5312;
-    std::string input;
+using namespace std;
 
-    std::cout << "Enter positive integers (enter 5312 to stop):\n";
+int main() {
+    uint32_t sum = 0;
+    const uint32_t STOP_NUMBER = 5312;
+    string input;
+
+    cout << "Enter positive integers (enter 5312 to stop):\n";
 
     while (true) {
-        std::cin >> input;
+        cin >> input;
 
         try {
-            // Попытка преобразовать введенное значение в число
-            uint64_t number = std::stoull(input);
+            // Преобразуем строку в uint32_t сразу 
+            uint32_t number = stoul(input);
 
-            // Проверка на корректный диапазон (до uint32_t)
-            if (number > std::numeric_limits<uint32_t>::max()) {
-                std::cout << "Invalid input format\n";
-                continue;
-            }
-
-            // Проверка на завершение ввода
             if (number == STOP_NUMBER) {
                 break;
             }
 
+            // Проверка на переполнение суммы
+            if (sum > numeric_limits<uint32_t>::max() - number) {
+                cout << "Sum exceeds maximum allowed value. Exiting.\n";
+                return 1;
+            }
+
             sum += number;
-        } catch (const std::invalid_argument& e) {
-            // Если ввод нельзя преобразовать в число
-            std::cout << "Invalid input format\n";
-        } catch (const std::out_of_range& e) {
-            // Если число превышает допустимый диапазон
-            std::cout << "Invalid input format\n";
+        } catch (const invalid_argument& e) {
+            cout << "Invalid input format\n";
+        } catch (const out_of_range& e) {
+            cout << "Number is out of range\n";
         }
     }
 
-    std::cout << "Sum of entered numbers: " << sum << "\n";
+    cout << "Sum of entered numbers: " << sum << "\n";
     return 0;
 }
