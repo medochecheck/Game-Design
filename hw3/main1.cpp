@@ -30,7 +30,6 @@ int main() {
             std::cout << "Invalid input format\n";
         }
     }
-
     std::cout << "Sum of entered numbers: " << sum << "\n";
     return 0;
 }
