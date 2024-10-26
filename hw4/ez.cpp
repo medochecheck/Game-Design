@@ -3,7 +3,6 @@
 #include <cstdlib>
 
 int main() {
-    // Переменные на стеке
 
 /*
     int a = 10;
@@ -25,7 +24,6 @@ int main() {
     std::cout << "Address of b: " << &b << "\n";
     std::cout << "Address of c: " << &c << "\n";
 
-    // Динамическая память
     uint32_t *ptr1 = (uint32_t *)std::calloc(250, sizeof(uint32_t));
     char *ptr2 = (char *)std::calloc(1000000, sizeof(char));
 
@@ -33,7 +31,6 @@ int main() {
     std::cout << "Address of ptr1 (250 uint32_t): " << static_cast<void*>(ptr1) << "\n";
     std::cout << "Address of ptr2 (1000000 char): " << static_cast<void*>(ptr2) << "\n";
 
-    // Освобождаем динамическую память
     std::free(ptr1);
     std::free(ptr2);
 
