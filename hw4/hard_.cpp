@@ -2,17 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum ExitStatus {
+    exit_ok = 0,            // штатное завершение
+    null_filename,  // пустое имя файла
+    err_open,       // не удалось открыть файл
+    err_memory   // не удалось выделить память
+};
+
+enum PreprocessStatus {
+    ok = 0,         // Штатное завершение
+    err_null = 1    // Ошибка: передан NULL указатель
+};
+
 // Функция для получения размера файла
 size_t count_fsize(const char* filename) {
     if (!filename) {
         printf("Filename iss NULL.\n");
-        return 0;
+        return null_filename;
     }
     
     FILE *file = fopen(filename, "rb");
     if (!file) {
         printf("Error: Could not open file.\n");
-        return 0;
+        return err_open;
     }
     fseek(file, 0, SEEK_END);  // Перемещаем указатель в конец файла
     size_t size = ftell(file); // Получаем текущий размер файла
@@ -21,7 +33,13 @@ size_t count_fsize(const char* filename) {
 }
 
 // Заменяем несколько \n подряд на одно \n
-size_t preprocess(char* text_buf) {
+//size_t preprocess(char* text_buf) {
+enum PreprocessStatus preprocess(char* text_buf) {
+    
+    if (!text_buf) {
+        return err_null;
+    }
+    
     size_t count = 0;
     int newline_flag = 0;  // Флаг, чтобы не записывать подряд несколько \n
 
@@ -37,7 +55,7 @@ size_t preprocess(char* text_buf) {
         }
     }
     text_buf[count] = '\0';  // Завершаем строку
-    return count;
+    return ok;
 }
 
 // Функция для заполнения массива строк
@@ -55,6 +73,8 @@ void fill_string_array(char* text_buf, size_t str_count, char** text) {
             j++;
             if (j < str_count) {
                 text[j] = &text_buf[i + 1];  // Указываем на начало следующей строки
+            } else {
+                break;
             }
         }
     }
@@ -81,20 +101,27 @@ void print_text(char** text, size_t str_count) {
         }
     }
 */
-        if (text[i]) {printf("%s\n", text[i]);}
+        //if (text[i]) {printf("%s\n", text[i]);}
+        if (text[i]) {
+            printf("%s\n", text[i]);
+        } else {
+            printf("(null)\n");
+        }
     }
 }
 
 int main() {
     // Получаем размер файла
     size_t file_size = count_fsize("yevgeniy_onegin.txt");
-    if (file_size == 0) return 1;
+    if (file_size == null_filename || file_size == err_open) {
+        return (int)file_size;
+    }
 
     // Выделяем память для текста
     char* text_buf = (char *)calloc(1, file_size + 1);  
     if (!text_buf) {
         printf("Error: Memory allocation failed.\n");
-        return 1;
+        return err_memory;
     }
 
     // Открываем файл и копируем его содержимое в буфер
@@ -102,20 +129,34 @@ int main() {
     if (!input) {
         printf("Error: Could not open file.\n");
         free(text_buf);
-        return 1;
+        return err_open;
     }
     fread(text_buf, 1, file_size, input);  // Считываем файл в буфер
     fclose(input);
 
     // Удаляем лишние переносы строк
-    size_t str_count = preprocess(text_buf);
+    //size_t str_count = preprocess(text_buf);
+
+    enum PreprocessStatus status = preprocess(text_buf);
+    if (status == err_null) {
+        printf("Error: text_buf is NULL.\n");
+        free(text_buf);
+        return err_memory;
+    }
+
+    size_t str_count = 0;
+    for (size_t i = 0; text_buf[i] != '\0'; ++i) {
+        if (text_buf[i] == '\n') {
+            str_count++;
+        }
+    }
 
     // Выделяем память для массива строк
     char **text = (char**)calloc(str_count, sizeof(char*));
     if (!text) {
         printf("Error: Memory allocation for text array failed.\n");
         free(text_buf);
-        return 1;
+        return err_memory;
     }
 
     // Заполняем массив строк
@@ -131,5 +172,5 @@ int main() {
     free(text);
     free(text_buf);
 
-    return 0;
+    return exit_ok;
 }
