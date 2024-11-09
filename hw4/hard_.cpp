@@ -4,6 +4,11 @@
 
 // Функция для получения размера файла
 size_t count_fsize(const char* filename) {
+    if (!filename) {
+        printf("Filename iss NULL.\n");
+        return 0;
+    }
+    
     FILE *file = fopen(filename, "rb");
     if (!file) {
         printf("Error: Could not open file.\n");
@@ -37,6 +42,9 @@ size_t preprocess(char* text_buf) {
 
 // Функция для заполнения массива строк
 void fill_string_array(char* text_buf, size_t str_count, char** text) {
+    if (!text_buf || !text) return; // Проверяем указатели на NULL 
+    
+    
     size_t j = 0;
     text[0] = text_buf;
 
@@ -54,17 +62,26 @@ void fill_string_array(char* text_buf, size_t str_count, char** text) {
 
 // Функция для сравнения строк для сортировки
 int compare_strings(const void* a, const void* b) {
-    char* str1 = *(char**)a;
-    char* str2 = *(char**)b;
+    if (!a || !b) return 0;
+    
+    char* str1 = *((char**)a);
+    char* str2 = *((char**)b);
+
+    if (!str1 || !str2) return 0;
     return strcmp(str1, str2);  // Лексикографическое сравнение строк
 }
 
 // Функция для вывода текста
 void print_text(char** text, size_t str_count) {
+    if (!text) return;
+    
     for (size_t i = 0; i < str_count; ++i) {
-        if (strlen(text[i]) > 0) {  // Печатаем только непустые строки
+/*        if (strlen(text[i]) > 0) {  // Печатаем только непустые строки
             printf("%s\n", text[i]);
         }
+    }
+*/
+        if (text[i]) {printf("%s\n", text[i]);}
     }
 }
 
@@ -74,14 +91,14 @@ int main() {
     if (file_size == 0) return 1;
 
     // Выделяем память для текста
-    char* text_buf = (char*)calloc(1, file_size + 1);  
+    char* text_buf = (char *)calloc(1, file_size + 1);  
     if (!text_buf) {
         printf("Error: Memory allocation failed.\n");
         return 1;
     }
 
     // Открываем файл и копируем его содержимое в буфер
-    FILE* input = fopen("yevgeniy_onegin.txt", "rb");
+    FILE *input = fopen("yevgeniy_onegin.txt", "rb");
     if (!input) {
         printf("Error: Could not open file.\n");
         free(text_buf);
@@ -94,7 +111,7 @@ int main() {
     size_t str_count = preprocess(text_buf);
 
     // Выделяем память для массива строк
-    char** text = (char**)calloc(str_count, sizeof(char*));
+    char **text = (char**)calloc(str_count, sizeof(char*));
     if (!text) {
         printf("Error: Memory allocation for text array failed.\n");
         free(text_buf);
