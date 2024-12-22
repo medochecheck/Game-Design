@@ -1,0 +1,56 @@
+﻿  main.cpp
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,80): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(248,68): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,88): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(252,76): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,88): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         with
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:             T=int
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         ]
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         and
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         [
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:             T=float
+C:\Users\admin\source\repos\OpenPicture\main.cpp(256,76): warning C4244:         ]
+  OpenPicture.vcxproj -> C:\Users\admin\source\repos\OpenPicture\x64\Debug\OpenPicture.exe
