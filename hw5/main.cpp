@@ -124,14 +124,25 @@ public:
 
 class Slider : public ImageContainer {
 private:
+    bool isDragging;
+    bool isWindowOpen;
     sf::Vector2f mousePosition;
-    bool isDragging = false;
 
 public:
     Slider(const std::string& imagePath)
-        : ImageContainer(imagePath) {}
+        : ImageContainer(imagePath), isDragging(false), isWindowOpen(false) {
+        setScale(1.f);
+    }
+
+    void setWindowOpen(bool open) {
+        isWindowOpen = open;
+    }
 
     void handleEvents(sf::RenderWindow& window, sf::Event& event) override {
+        if (isWindowOpen) {
+            return; 
+        }
+
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
         DebugLogger::log("Mouse Pos = (" + std::to_string(worldPos.x) + ", " + std::to_string(worldPos.y) + ")");
@@ -156,9 +167,14 @@ public:
         }
 
         if (event.type == sf::Event::MouseWheelScrolled) {
+            if (isWindowOpen) {
+                return; 
+            }
+
             float oldScale = getScale();
             float newScale = getScale() + event.mouseWheelScroll.delta * 0.1f;
             setScale(std::max(0.1f, newScale));
+
             sf::Vector2f offset = (worldPos - getSprite().getPosition()) * (newScale / oldScale - 1.f);
             getSprite().move(-offset);
             DebugLogger::log("Mouse Wheel Scrolled: Scale = " + std::to_string(newScale));
@@ -168,22 +184,26 @@ public:
     }
 
     void updateWithKeyboard() {
+        if (isWindowOpen) {
+            return;
+        }
+
         sf::Vector2f movement(0.f, 0.f);
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            movement.y += 0.5f;
+            movement.y -= 0.5f;
             DebugLogger::log("Keyboard Pressed: Up Arrow");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            movement.y -= 0.5f;
+            movement.y += 0.5f;
             DebugLogger::log("Keyboard Pressed: Down Arrow");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            movement.x += 0.5f;
+            movement.x -= 0.5f;
             DebugLogger::log("Keyboard Pressed: Left Arrow");
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            movement.x -= 0.5f;
+            movement.x += 0.5f;
             DebugLogger::log("Keyboard Pressed: Right Arrow");
         }
 
@@ -196,17 +216,109 @@ public:
 };
 
 
+
+class DraggableWindow {
+private:
+    sf::RectangleShape windowBackground;
+    sf::Sprite imageSprite;
+    sf::Texture imageTexture;
+    sf::Vector2f dragOffset;
+    bool isDragging;
+    sf::RectangleShape closeButton;
+
+public:
+    DraggableWindow(const std::string& imagePath) : isDragging(false) {
+        if (!imageTexture.loadFromFile(imagePath)) {
+            throw std::runtime_error("Failed to load image for draggable window");
+        }
+
+        windowBackground.setSize({ 400.f, 300.f });
+        windowBackground.setFillColor(sf::Color(100, 100, 100));
+
+        imageSprite.setTexture(imageTexture);
+        scaleImageToFitWindow();
+
+        closeButton.setSize({ 30.f, 30.f });
+        closeButton.setFillColor(sf::Color::Red);
+        closeButton.setPosition(windowBackground.getSize().x - 40.f, 10.f);
+    }
+
+    void scaleImageToFitWindow() {
+        sf::Vector2u imageSize = imageTexture.getSize();
+        float scaleX = static_cast<float>(windowBackground.getSize().x) / static_cast<float>(imageSize.x);
+        float scaleY = static_cast<float>(windowBackground.getSize().y) / static_cast<float>(imageSize.y);
+        float scale = std::min(scaleX, scaleY);
+        imageSprite.setScale(scale, scale);
+        windowBackground.setSize({
+            static_cast<float>(imageSize.x) * scale + 20.f,
+            static_cast<float>(imageSize.y) * scale + 70.f
+            });
+    }
+
+    void setPosition(const sf::Vector2f& position) {
+        windowBackground.setPosition(position);
+        imageSprite.setPosition(position.x + 10.f, position.y + 50.f);
+        closeButton.setPosition(position.x + windowBackground.getSize().x - 40.f, position.y + 10.f);
+    }
+
+    void handleEvents(sf::RenderWindow& window, sf::Event& event) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (windowBackground.getGlobalBounds().contains(worldPos)) {
+                isDragging = true;
+                dragOffset = worldPos - windowBackground.getPosition();
+            }
+            if (closeButton.getGlobalBounds().contains(worldPos)) {
+                isDragging = false;
+            }
+        }
+
+        if (event.type == sf::Event::MouseButtonReleased) {
+            isDragging = false;
+        }
+
+        if (event.type == sf::Event::MouseMoved && isDragging) {
+            windowBackground.setPosition(worldPos - dragOffset);
+            imageSprite.setPosition(windowBackground.getPosition().x + 10.f, windowBackground.getPosition().y + 50.f);
+            closeButton.setPosition(windowBackground.getPosition().x + windowBackground.getSize().x - 40.f, windowBackground.getPosition().y + 10.f);
+        }
+    }
+
+    void render(sf::RenderWindow& window) {
+        window.draw(windowBackground);
+        window.draw(imageSprite);
+        window.draw(closeButton);
+    }
+
+    bool isCloseButtonClicked(sf::Event& event, sf::RenderWindow& window) {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+            if (closeButton.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
+                DebugLogger::log("The second window was closed");
+                return true; 
+            }
+        }
+        return false;
+    }
+};
+
+
+
 class PhotoViewerApp : public Window {
 private:
     BaseContainer container;
-    sf::RectangleShape closeButton, minimizeButton, maximizeButton;
+    sf::RectangleShape closeButton, minimizeButton, maximizeButton, openWindowButton;
     std::shared_ptr<Slider> slider;
     bool isFullscreen = true;
     float imageScale = 1.f;
+    std::shared_ptr<DraggableWindow> draggableWindow;
+    bool isWindowOpen;
 
 public:
     PhotoViewerApp()
-        : Window("Photo Viewer", { 800, 600 }) {
+        : Window("Photo Viewer", { 800, 600 }), isWindowOpen(false) {
         slider = std::make_shared<Slider>("image.bmp");
         container.addChild(slider);
 
@@ -221,6 +333,10 @@ public:
         minimizeButton.setSize({ 40.f, 40.f });
         minimizeButton.setFillColor(sf::Color::Green);
         minimizeButton.setPosition(window.getSize().x - 150.f, 10.f);
+
+        openWindowButton.setSize({ 40.f, 40.f });
+        openWindowButton.setFillColor(sf::Color::Blue);
+        openWindowButton.setPosition(10.f, 10.f);
 
         slider->centerImage(window);
     }
@@ -244,6 +360,16 @@ public:
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+                if (openWindowButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    if (!isWindowOpen) {
+                        draggableWindow = std::make_shared<DraggableWindow>("image_2.bmp");
+                        draggableWindow->setPosition({ 100.f, 100.f });
+                        isWindowOpen = true;
+                        slider->setWindowOpen(true);
+                        DebugLogger::log("The second window was open");
+                    }
+                }
 
                 if (closeButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                     window.close();
@@ -278,6 +404,14 @@ public:
                 }
             }
 
+            if (isWindowOpen) {
+                draggableWindow->handleEvents(window, event);
+                if (draggableWindow->isCloseButtonClicked(event, window)) {
+                    isWindowOpen = false; 
+                    slider->setWindowOpen(false); 
+                }
+            }
+
             container.handleEvents(window, event);
         }
     }
@@ -291,8 +425,14 @@ public:
         window.draw(closeButton);
         window.draw(minimizeButton);
         window.draw(maximizeButton);
+        window.draw(openWindowButton);
+
+        if (isWindowOpen) {
+            draggableWindow->render(window);
+        }
     }
 };
+
 
 int main() {
     DebugLogger::initialize();
